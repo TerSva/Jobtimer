@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sledování pracovní doby</title>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #011826;
+            --bg-secondary: #012a3a;
+            --bg-card: rgba(3, 127, 140, 0.1);
+            --accent-primary: #03A6A6;
+            --accent-secondary: #037F8C;
+            --accent-tertiary: #025940;
+            --text-primary: #e6f4f5;
+            --text-secondary: #8bc9d0;
+            --border: rgba(3, 166, 166, 0.2);
+            --danger: #ff4757;
+            --warning: #ffa502;
+            --glass-bg: rgba(3, 127, 140, 0.15);
+            --glass-border: rgba(3, 166, 166, 0.25);
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #025940 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(3, 127, 140, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(3, 166, 166, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+
+
+        .add-project-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.6s ease-out 0.1s both;
+        }
+
+        .add-project-form {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(3, 127, 140, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(3, 166, 166, 0.1);
+            box-shadow: 0 0 0 3px rgba(3, 166, 166, 0.15);
+        }
+
+        .btn-add {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            box-shadow:
+                0 8px 20px rgba(3, 166, 166, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 25px rgba(3, 166, 166, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow:
+                0 8px 32px rgba(1, 24, 38, 0.4),
+                inset 0 1px 0 rgba(3, 166, 166, 0.1);
+            animation: fadeIn 0.4s ease-out;
+            position: relative;
+        }
+
+        .project-card.running {
+            border-color: var(--accent-primary);
+        }
+
+        .project-card.paused {
+            border-color: var(--warning);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+            padding-right: 1rem;
+            word-break: break-word;
+        }
+
+        .btn-delete {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .timer-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(3, 127, 140, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-display.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .timer-display.paused::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--warning);
+            opacity: 0.7;
+        }
+
+        .time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            letter-spacing: 0.05em;
+            text-shadow:
+                0 0 30px rgba(3, 166, 166, 0.5),
+                0 0 60px rgba(3, 166, 166, 0.3);
+        }
+
+        .status {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.9rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-primary);
+            box-shadow:
+                0 8px 20px rgba(3, 166, 166, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 25px rgba(3, 166, 166, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, var(--danger), #ff3838);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 71, 87, 0.4);
+        }
+
+        .btn-pause {
+            background: linear-gradient(135deg, var(--warning), #ff8c00);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 165, 2, 0.3);
+        }
+
+        .btn-pause:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 165, 2, 0.4);
+        }
+
+        .btn-resume {
+            background: linear-gradient(135deg, var(--accent-tertiary), #037F8C);
+            color: white;
+            box-shadow:
+                0 8px 20px rgba(2, 89, 64, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-resume:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 25px rgba(2, 89, 64, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .pause-info {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 165, 2, 0.1);
+            border-radius: 0.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--warning);
+        }
+
+        .stats-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow:
+                0 8px 32px rgba(1, 24, 38, 0.4),
+                inset 0 1px 0 rgba(3, 166, 166, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(3, 127, 140, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-primary);
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .history-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow:
+                0 8px 32px rgba(1, 24, 38, 0.4),
+                inset 0 1px 0 rgba(3, 166, 166, 0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .history-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-export {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
+            color: white;
+            box-shadow:
+                0 8px 20px rgba(3, 127, 140, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 25px rgba(3, 127, 140, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-clear {
+            padding: 0.75rem 1.5rem;
+            background: rgba(3, 127, 140, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+        }
+
+        .btn-clear:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            background: rgba(3, 127, 140, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .history-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(5px);
+            background: rgba(3, 166, 166, 0.15);
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-task {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .history-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .history-duration {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-align: right;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .top-dashboard {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .header-left {
+                text-align: center;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .add-project-form {
+                flex-direction: column;
+            }
+
+            .time {
+                font-size: 2rem;
+            }
+
+            .project-buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .history-duration {
+                text-align: left;
+            }
+        }
+
+        /* New Styles for Top Dashboard */
+        .top-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header-left h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-left p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .total-time-display {
+            background: linear-gradient(135deg, rgba(3, 166, 166, 0.1), rgba(3, 127, 140, 0.2));
+            border: 1px solid var(--glass-border);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .total-time-display .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .total-time-display .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .current-date-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            text-align: right;
+            box-shadow: 0 8px 32px rgba(1, 24, 38, 0.4);
+            min-width: 250px;
+        }
+
+        .date-main {
+            display: flex;
+            align-items: baseline;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .day-name {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .time-main {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-shadow: 0 0 20px rgba(3, 166, 166, 0.4);
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const formatTime = (seconds) => {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        };
+
+        const formatDate = (dateString) => {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('cs-CZ', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        };
+
+        const HistoryItem = ({ entry }) => (
+            <div className="history-item">
+                <div className="history-info">
+                    <div className="history-task">{entry.task}</div>
+                    <div className="history-date">
+                        {formatDate(entry.startTime)} → {formatDate(entry.endTime)}
+                        {entry.pausedTime > 0 && (
+                            <span style={{ color: 'var(--warning)', marginLeft: '1rem' }}>
+                                (pauza: {formatTime(entry.pausedTime)})
+                            </span>
+                        )}
+                    </div>
+                </div>
+                <div className="history-duration">
+                    {formatTime(entry.duration)}
+                </div>
+            </div>
+        );
+
+        const ProjectCard = ({ project, onStart, onPause, onResume, onStop, onDelete }) => {
+            const [currentTime, setCurrentTime] = useState(project.accumulatedTime);
+
+            useEffect(() => {
+                let interval;
+                if (project.isRunning && !project.isPaused && project.startTime) {
+                    const tick = () => {
+                        const now = Date.now();
+                        const start = new Date(project.startTime).getTime();
+                        const duration = Math.floor((now - start) / 1000) - project.pausedTime;
+                        setCurrentTime(Math.max(0, duration));
+                    };
+                    tick();
+                    interval = setInterval(tick, 1000);
+                } else if (!project.isRunning) {
+                    setCurrentTime(0);
+                } else {
+                    // paused, retain last known
+                    // For simpler display logic relying on parent updates:
+                    // The parent doesn't update 'time' continuously.
+                    // So we need to calculate it if we just mounted?
+                    // If paused, we can calc from pauseTime? 
+                    // Let's use the logic from previous version which was robust:
+                    if (project.pauseStartTime) {
+                        const start = new Date(project.startTime).getTime();
+                        const pauseStart = new Date(project.pauseStartTime).getTime();
+                        // Duration at pause = pauseStart - start - pausedTimeBeforePause
+                        // This logic is getting complex to duplicate. 
+                        // Let's rely on 'time' snapshot stored when pausing if available, 
+                        // OR re-calculate.
+                        // In the previous app we updated `time` state on Pause.
+                        setCurrentTime(project.time);
+                    } else {
+                        setCurrentTime(project.time);
+                    }
+                }
+                return () => clearInterval(interval);
+            }, [project.isRunning, project.isPaused, project.startTime, project.pausedTime, project.time, project.pauseStartTime]);
+
+            const getCardClass = () => {
+                if (project.isRunning && !project.isPaused) return 'project-card running';
+                if (project.isPaused) return 'project-card paused';
+                return 'project-card';
+            };
+
+            const getTimerClass = () => {
+                if (project.isRunning && !project.isPaused) return 'timer-display active';
+                if (project.isPaused) return 'timer-display paused';
+                return 'timer-display';
+            };
+
+            const getStatus = () => {
+                if (!project.isRunning) return '○ ZASTAVENO';
+                if (project.isPaused) return '⏸ POZASTAVENO';
+                return '● BĚŽÍ';
+            };
+
+            return (
+                <div className={getCardClass()}>
+                    <div className="project-header">
+                        <div className="project-name">{project.name}</div>
+                        <button className="btn-delete" onClick={() => onDelete(project.id)}>
+                            🗑️ Smazat
+                        </button>
+                    </div>
+
+                    <div className={getTimerClass()}>
+                        <div className="time">{formatTime(currentTime)}</div>
+                        <div className="status">{getStatus()}</div>
+                    </div>
+
+                    <div className="project-buttons">
+                        {!project.isRunning ? (
+                            <button className="btn-start" onClick={() => onStart(project.id)}>
+                                ▶ Start
+                            </button>
+                        ) : project.isPaused ? (
+                            <>
+                                <button className="btn-resume" onClick={() => onResume(project.id)}>
+                                    ▶ Pokračovat
+                                </button>
+                                <button className="btn-stop" onClick={() => onStop(project.id)}>
+                                    ◼ Stop
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button className="btn-pause" onClick={() => onPause(project.id)}>
+                                    ⏸ Pauza
+                                </button>
+                                <button className="btn-stop" onClick={() => onStop(project.id)}>
+                                    ◼ Stop
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    {project.isPaused && (
+                        <div className="pause-info">
+                            ⏸ Projekt je pozastaven - čas pauzy: {formatTime(project.pausedTime)}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const CurrentDate = () => {
+            const [date, setDate] = useState(new Date());
+
+            useEffect(() => {
+                const timer = setInterval(() => setDate(new Date()), 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const days = ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'];
+            const months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
+
+            return (
+                <div className="current-date-card">
+                    <div className="date-main">
+                        <span className="day-name">{days[date.getDay()]}</span>
+                        <span className="day-number">{date.getDate()}.</span>
+                        <span className="month-name">{months[date.getMonth()]}</span>
+                        <span className="year-number">{date.getFullYear()}</span>
+                    </div>
+                    <div className="time-main">
+                        {date.toLocaleTimeString('cs-CZ')}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [projects, setProjects] = useState(() => {
+                const saved = localStorage.getItem('jobtimer_projects');
+                return saved ? JSON.parse(saved) : [];
+            });
+            const [history, setHistory] = useState(() => {
+                const saved = localStorage.getItem('jobtimer_history');
+                return saved ? JSON.parse(saved) : [];
+            });
+            const [newProjectName, setNewProjectName] = useState('');
+
+            useEffect(() => { localStorage.setItem('jobtimer_projects', JSON.stringify(projects)); }, [projects]);
+            useEffect(() => { localStorage.setItem('jobtimer_history', JSON.stringify(history)); }, [history]);
+
+            // ... (rest of the logic handlers remains the same, assuming we don't need to re-write them all if we use replace_file_content carefully.
+            // However, to supply 'App' we need the whole body. Let's re-use the handlers from previous file content or re-declare them to be safe.)
+
+            const addProject = () => {
+                if (!newProjectName.trim()) return;
+                const newProject = {
+                    id: Date.now(),
+                    name: newProjectName,
+                    isRunning: false,
+                    isPaused: false,
+                    time: 0,
+                    pausedTime: 0,
+                    startTime: null,
+                    pauseStartTime: null
+                };
+                setProjects(prev => [newProject, ...prev]);
+                setNewProjectName('');
+            };
+
+            const deleteProject = (id) => {
+                if (window.confirm('Opravdu chcete smazat tento projekt?')) {
+                    setProjects(prev => prev.filter(p => p.id !== id));
+                }
+            };
+
+            const startProject = (id) => {
+                setProjects(prev => prev.map(p => {
+                    if (p.id !== id) return p;
+                    return { ...p, isRunning: true, isPaused: false, startTime: new Date().toISOString(), time: 0, pausedTime: 0 };
+                }));
+            };
+
+            const pauseProject = (id) => {
+                setProjects(prev => prev.map(p => {
+                    if (p.id !== id) return p;
+                    const now = Date.now();
+                    const start = new Date(p.startTime).getTime();
+                    const currentDuration = Math.floor((now - start) / 1000) - p.pausedTime;
+                    return { ...p, isPaused: true, pauseStartTime: new Date().toISOString(), time: currentDuration };
+                }));
+            };
+
+            const resumeProject = (id) => {
+                setProjects(prev => prev.map(p => {
+                    if (p.id !== id) return p;
+                    const pauseSeconds = Math.floor((new Date() - new Date(p.pauseStartTime)) / 1000);
+                    return { ...p, isPaused: false, pauseStartTime: null, pausedTime: p.pausedTime + pauseSeconds };
+                }));
+            };
+
+            const stopProject = (id) => {
+                let projectToSave = null;
+                setProjects(prev => prev.map(p => {
+                    if (p.id !== id) return p;
+                    projectToSave = p;
+                    return { ...p, isRunning: false, isPaused: false, time: 0, pausedTime: 0, startTime: null, pauseStartTime: null };
+                }));
+
+                if (projectToSave) {
+                    const now = new Date();
+                    const start = new Date(projectToSave.startTime);
+                    let additionalPause = 0;
+                    if (projectToSave.isPaused && projectToSave.pauseStartTime) {
+                        additionalPause = Math.floor((now - new Date(projectToSave.pauseStartTime)) / 1000);
+                    }
+                    const totalPaused = projectToSave.pausedTime + additionalPause;
+                    const totalElapsed = Math.floor((now - start) / 1000);
+                    const finalDuration = Math.max(0, totalElapsed - totalPaused);
+
+                    const historyItem = {
+                        id: Date.now(),
+                        task: projectToSave.name,
+                        startTime: projectToSave.startTime,
+                        endTime: now.toISOString(),
+                        duration: finalDuration,
+                        pausedTime: totalPaused
+                    };
+                    setHistory(prev => [historyItem, ...prev]);
+                }
+            };
+
+            const exportCSV = () => {
+                if (history.length === 0) return alert("Žádná data k exportu.");
+                const BOM = "\uFEFF";
+                const headers = "Úkol;Začátek;Konec;Trvání (hod);Čas pauzy (min);Trvání (sekundy)\n";
+                const rows = history.map(item => {
+                    const durationHours = (item.duration / 3600).toFixed(2).replace('.', ',');
+                    const pauseMin = Math.round(item.pausedTime / 60);
+                    const start = new Date(item.startTime).toLocaleString('cs-CZ');
+                    const end = new Date(item.endTime).toLocaleString('cs-CZ');
+                    const taskName = `"${item.task.replace(/"/g, '""')}"`;
+                    return `${taskName};${start};${end};${durationHours};${pauseMin};${item.duration}`;
+                }).join("\n");
+
+                const blob = new Blob([BOM + headers + rows], { type: "text/csv;charset=utf-8" });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `pracovni-vykaz-${new Date().toISOString().slice(0, 10)}.csv`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+
+            const clearHistory = () => {
+                if (window.confirm('Opravdu chcete vymazat celou historii?')) {
+                    setHistory([]);
+                }
+            };
+
+            const activeCount = projects.filter(p => p.isRunning && !p.isPaused).length;
+            const todaySeconds = history.filter(h => new Date(h.endTime).toDateString() === new Date().toDateString()).reduce((a, b) => a + b.duration, 0);
+            const totalSecondsAllTime = history.reduce((a, b) => a + b.duration, 0);
+
+            return (
+                <div className="container">
+                    <div className="top-dashboard">
+                        <div className="header-left">
+                            <h1>⏱️ Pracovní Časomíra</h1>
+                            <p>Sledujte více projektů současně</p>
+
+                            <div className="total-time-display">
+                                <span className="label">Celkem odpracováno (historie):</span>
+                                <span className="value">{formatTime(totalSecondsAllTime)}</span>
+                            </div>
+                        </div>
+                        <CurrentDate />
+                    </div>
+
+                    <div className="stats-section">
+                        <div className="stats-grid">
+                            <div className="stat-card">
+                                <div className="stat-value">{projects.length}</div>
+                                <div className="stat-label">Aktivní projekty</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-value">{activeCount}</div>
+                                <div className="stat-label">Běží nyní</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-value">{formatTime(todaySeconds)}</div>
+                                <div className="stat-label">Dnes celkem</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-value">{history.length}</div>
+                                <div className="stat-label">Dokončeno</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="add-project-section">
+                        <div className="add-project-form">
+                            <div className="form-group">
+                                <label>Nový projekt</label>
+                                <input
+                                    type="text"
+                                    value={newProjectName}
+                                    onChange={(e) => setNewProjectName(e.target.value)}
+                                    placeholder="Např: Vývoj webové aplikace..."
+                                />
+                            </div>
+                            <button className="btn-add" onClick={addProject}>
+                                + Přidat projekt
+                            </button>
+                        </div>
+                    </div>
+
+                    {projects.length === 0 ? (
+                        <div className="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <p>Zatím žádné projekty. Přidejte první projekt výše!</p>
+                        </div>
+                    ) : (
+                        <div className="projects-grid">
+                            {projects.map(p => (
+                                <ProjectCard
+                                    key={p.id}
+                                    project={p}
+                                    onStart={startProject}
+                                    onPause={pauseProject}
+                                    onResume={resumeProject}
+                                    onStop={stopProject}
+                                    onDelete={deleteProject}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="history-card">
+                        <div className="history-header">
+                            <h2>📋 Historie práce</h2>
+                            <div className="history-actions">
+                                <button className="btn-export" onClick={exportCSV}>
+                                    📥 Export CSV
+                                </button>
+                                <button className="btn-clear" onClick={clearHistory}>
+                                    🗑️ Vymazat
+                                </button>
+                            </div>
+                        </div>
+                        {history.length === 0 ? (
+                            <div className="empty-state">
+                                <p>Zatím žádné záznamy. Začněte měřit čas!</p>
+                            </div>
+                        ) : (
+                            <div className="history-list">
+                                {history.map(item => <HistoryItem key={item.id} entry={item} />)}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
