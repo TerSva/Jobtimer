@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pracovní Časomíra — Visual Design Book</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+           VISUAL BOOK — BASE RESET & VARIABLES
+           ═══════════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* App palette — extracted tokens */
+            --bg-primary: #011826;
+            --bg-secondary: #012a3a;
+            --bg-card: rgba(3, 127, 140, 0.1);
+            --accent-primary: #03A6A6;
+            --accent-secondary: #049DA5;
+            --accent-tertiary: #025940;
+            --text-primary: #e6f4f5;
+            --text-secondary: #8bc9d0;
+            --border: rgba(3, 166, 166, 0.2);
+            --danger: #ff4757;
+            --warning: #ffa502;
+            --glass-bg: rgba(3, 127, 140, 0.15);
+            --glass-border: rgba(3, 166, 166, 0.25);
+
+            /* Visual book specific */
+            --vb-bg: #0a0e17;
+            --vb-surface: #111827;
+            --vb-surface-2: #1a2332;
+            --vb-text: #e2e8f0;
+            --vb-text-muted: #94a3b8;
+            --vb-accent: #03A6A6;
+            --vb-border: rgba(255,255,255,0.06);
+            --vb-code-bg: #0d1117;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--vb-bg);
+            color: var(--vb-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ═══════════════════════════════════════════
+           HERO SECTION
+           ═══════════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(ellipse at 30% 50%, rgba(3, 166, 166, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(2, 89, 64, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(3, 127, 140, 0.05) 0%, transparent 40%);
+            animation: heroFloat 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, -1%) rotate(1deg); }
+            66% { transform: translate(-1%, 2%) rotate(-0.5deg); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: rgba(3, 166, 166, 0.1);
+            border: 1px solid rgba(3, 166, 166, 0.2);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--vb-accent);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--vb-accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--vb-text-muted);
+            max-width: 560px;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.8s ease-out 0.6s both;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.8s ease-out 0.8s both;
+        }
+
+        .hero-meta-item {
+            text-align: center;
+        }
+
+        .hero-meta-item .val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--vb-accent);
+        }
+
+        .hero-meta-item .lbl {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--vb-text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--vb-text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            animation: fadeUp 0.8s ease-out 1s both;
+        }
+
+        .scroll-hint .arrow {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--vb-accent), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.4; transform: scaleY(0.6); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ═══════════════════════════════════════════
+           SECTIONS — GENERAL
+           ═══════════════════════════════════════════ */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--vb-accent);
+            margin-bottom: 1rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--vb-accent);
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-desc {
+            color: var(--vb-text-muted);
+            font-size: 1.05rem;
+            max-width: 640px;
+            margin-bottom: 3rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--vb-border), transparent);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════════
+           01 — COLOR PALETTE
+           ═══════════════════════════════════════════ */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .color-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--vb-surface);
+            border: 1px solid var(--vb-border);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .color-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .color-swatch {
+            height: 120px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 0.75rem;
+        }
+
+        .color-swatch .contrast-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            backdrop-filter: blur(4px);
+        }
+
+        .color-info {
+            padding: 1rem;
+        }
+
+        .color-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .color-token {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-text-muted);
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .color-values {
+            display: flex;
+            gap: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-text-muted);
+        }
+
+        .color-copy {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .color-copy:hover {
+            color: var(--vb-accent);
+        }
+
+        /* Glassmorphism showcase */
+        .glass-showcase {
+            margin-top: 3rem;
+            padding: 3rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #025940 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(3, 127, 140, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(3, 166, 166, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-showcase-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .glass-showcase-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .glass-demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        .glass-demo-card {
+            padding: 2rem;
+            border-radius: 1.5rem;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(3, 166, 166, 0.25);
+            text-align: center;
+        }
+
+        .glass-demo-card.level-1 { background: rgba(3, 127, 140, 0.08); }
+        .glass-demo-card.level-2 { background: rgba(3, 127, 140, 0.15); }
+        .glass-demo-card.level-3 { background: rgba(3, 127, 140, 0.25); }
+
+        .glass-demo-card .glass-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .glass-demo-card .glass-value {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ═══════════════════════════════════════════
+           02 — TYPOGRAPHY
+           ═══════════════════════════════════════════ */
+        .type-specimen {
+            margin-bottom: 3rem;
+        }
+
+        .type-family-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .type-family-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .type-family-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(3, 166, 166, 0.1);
+            border: 1px solid rgba(3, 166, 166, 0.2);
+            border-radius: 100px;
+            color: var(--vb-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .type-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .type-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            align-items: baseline;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--vb-border);
+        }
+
+        .type-row-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-text-muted);
+            line-height: 1.4;
+        }
+
+        .type-row-sample {
+            color: var(--vb-text);
+            transition: color 0.3s;
+        }
+
+        .type-row:hover .type-row-sample {
+            color: var(--vb-accent);
+        }
+
+        .type-weights {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding: 1.5rem;
+            background: var(--vb-surface);
+            border-radius: 12px;
+            border: 1px solid var(--vb-border);
+        }
+
+        .type-weight-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .type-weight-sample {
+            font-size: 1.5rem;
+        }
+
+        .type-weight-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--vb-text-muted);
+        }
+
+        /* ═══════════════════════════════════════════
+           03 — COMPONENTS
+           ═══════════════════════════════════════════ */
+        .component-block {
+            margin-bottom: 4rem;
+        }
+
+        .component-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .component-desc {
+            color: var(--vb-text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+        }
+
+        .component-preview {
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #025940 100%);
+            border-radius: 20px;
+            border: 1px solid var(--vb-border);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .component-preview::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(3, 127, 140, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(3, 166, 166, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .component-preview > * { position: relative; z-index: 1; }
+
+        /* Buttons in preview */
+        .btn-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .preview-btn {
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+
+        /* Button size system */
+        .preview-btn.btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .preview-btn.btn-md,
+        .preview-btn {
+            padding: 0.9rem 1.75rem;
+        }
+
+        .preview-btn.btn-lg {
+            padding: 1.1rem 2.25rem;
+            font-size: 1rem;
+        }
+
+        .preview-btn:active { transform: translateY(0) !important; }
+
+        /* Focus states for preview buttons */
+        .preview-btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(3, 166, 166, 0.3), 0 0 20px rgba(3, 166, 166, 0.15);
+            animation: focusPulse 0.3s ease-out;
+        }
+        .preview-btn.stop:focus-visible,
+        .preview-btn.delete:focus-visible {
+            box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.3), 0 0 20px rgba(255, 71, 87, 0.15);
+        }
+        .preview-btn.pause:focus-visible {
+            box-shadow: 0 0 0 3px rgba(255, 165, 2, 0.3), 0 0 20px rgba(255, 165, 2, 0.15);
+        }
+        @keyframes focusPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .preview-btn.start {
+            background: linear-gradient(135deg, #03A6A6, #049DA5);
+            color: #011826;
+            box-shadow: 0 8px 20px rgba(3, 166, 166, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .preview-btn.start:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(3, 166, 166, 0.4); }
+
+        .preview-btn.stop {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+        }
+        .preview-btn.stop:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 71, 87, 0.4); }
+
+        .preview-btn.pause {
+            background: linear-gradient(135deg, #ffa502, #ff8c00);
+            color: #011826;
+            box-shadow: 0 8px 20px rgba(255, 165, 2, 0.3);
+        }
+        .preview-btn.pause:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 165, 2, 0.4); }
+
+        .preview-btn.resume {
+            background: linear-gradient(135deg, #025940, #049DA5);
+            color: white;
+            box-shadow: 0 8px 20px rgba(2, 89, 64, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .preview-btn.resume:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(2, 89, 64, 0.4); }
+
+        .preview-btn.add {
+            background: linear-gradient(135deg, #03A6A6, #049DA5);
+            color: #011826;
+            box-shadow: 0 8px 20px rgba(3, 166, 166, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .preview-btn.delete {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 0.5rem;
+        }
+        .preview-btn.delete:hover { background: #ff4757; color: white; }
+
+        .preview-btn.export {
+            background: linear-gradient(135deg, #049DA5, #025940);
+            color: white;
+            box-shadow: 0 8px 20px rgba(3, 127, 140, 0.3);
+        }
+
+        .preview-btn.clear {
+            background: rgba(3, 127, 140, 0.15);
+            color: #8bc9d0;
+            border: 1px solid rgba(3, 166, 166, 0.25);
+        }
+        .preview-btn.clear:hover { background: #ff4757; color: white; border-color: #ff4757; }
+
+        .btn-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--vb-text-muted);
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .btn-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Input preview */
+        .preview-input {
+            width: 100%;
+            max-width: 420px;
+            padding: 1rem 1.25rem;
+            background: rgba(3, 127, 140, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(3, 166, 166, 0.25);
+            border-radius: 0.75rem;
+            color: #e6f4f5;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .preview-input:focus {
+            outline: none;
+            border-color: #03A6A6;
+            background: rgba(3, 166, 166, 0.1);
+            box-shadow: 0 0 0 3px rgba(3, 166, 166, 0.15);
+        }
+
+        .preview-input::placeholder {
+            color: rgba(139, 201, 208, 0.5);
+        }
+
+        .input-states {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            max-width: 420px;
+        }
+
+        .input-state-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* Card states */
+        .card-states-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .preview-card {
+            background: rgba(3, 127, 140, 0.15);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(3, 166, 166, 0.25);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(1, 24, 38, 0.4), inset 0 1px 0 rgba(3, 166, 166, 0.1);
+        }
+
+        .preview-card.state-running { border-color: #03A6A6; }
+        .preview-card.state-paused { border-color: #ffa502; }
+
+        .preview-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-card-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e6f4f5;
+        }
+
+        .preview-timer {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(3, 127, 140, 0.2);
+            border-radius: 1rem;
+            border: 1px solid rgba(3, 166, 166, 0.25);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-timer.active {
+            box-shadow: 0 0 30px rgba(3, 166, 166, 0.15), 0 0 60px rgba(3, 166, 166, 0.05);
+        }
+
+        .preview-timer.active::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #03A6A6, #049DA5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .preview-timer.paused-timer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: #ffa502;
+            opacity: 0.7;
+        }
+
+        .preview-timer .time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #03A6A6;
+            letter-spacing: 0.05em;
+        }
+
+        .preview-timer .status {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #8bc9d0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .preview-card-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .preview-card-buttons .preview-btn {
+            flex: 1;
+        }
+
+        /* Stat cards */
+        .stat-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .preview-stat {
+            background: rgba(3, 127, 140, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(3, 166, 166, 0.25);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .preview-stat:hover {
+            transform: translateY(-3px);
+            border-color: #03A6A6;
+        }
+
+        .preview-stat .val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #03A6A6;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-stat .lbl {
+            color: #8bc9d0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* History item */
+        .preview-history {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .preview-history-item {
+            background: rgba(3, 127, 140, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(3, 166, 166, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .preview-history-item:hover {
+            border-color: #03A6A6;
+            transform: translateX(5px);
+            background: rgba(3, 166, 166, 0.15);
+        }
+
+        .preview-history-task {
+            font-weight: 600;
+            color: #e6f4f5;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .preview-history-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #8bc9d0;
+        }
+
+        .preview-history-duration {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #03A6A6;
+        }
+
+        /* ═══════════════════════════════════════════
+           04 — LAYOUT & SPACING
+           ═══════════════════════════════════════════ */
+        .spacing-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .spacing-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spacing-bar {
+            height: 32px;
+            background: linear-gradient(135deg, rgba(3, 166, 166, 0.3), rgba(3, 166, 166, 0.1));
+            border: 1px solid rgba(3, 166, 166, 0.3);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .spacing-bar:hover {
+            background: linear-gradient(135deg, rgba(3, 166, 166, 0.5), rgba(3, 166, 166, 0.2));
+        }
+
+        .spacing-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--vb-text-muted);
+            min-width: 80px;
+        }
+
+        .spacing-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-accent);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .radius-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: flex-end;
+        }
+
+        .radius-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .radius-box {
+            width: 80px;
+            height: 80px;
+            background: rgba(3, 166, 166, 0.15);
+            border: 2px solid rgba(3, 166, 166, 0.4);
+            transition: all 0.3s;
+        }
+
+        .radius-box:hover {
+            background: rgba(3, 166, 166, 0.3);
+            border-color: var(--vb-accent);
+        }
+
+        .radius-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-text-muted);
+            text-align: center;
+        }
+
+        /* Layout diagram */
+        .layout-diagram {
+            background: var(--vb-surface);
+            border: 1px solid var(--vb-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .layout-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .layout-wireframe {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .wireframe-block {
+            border: 1.5px dashed rgba(3, 166, 166, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-accent);
+            text-align: center;
+            background: rgba(3, 166, 166, 0.03);
+            transition: all 0.3s;
+        }
+
+        .wireframe-block:hover {
+            border-color: var(--vb-accent);
+            background: rgba(3, 166, 166, 0.08);
+        }
+
+        .wireframe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .wireframe-block.tall {
+            padding: 2rem 1rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           05 — UX RECOMMENDATIONS
+           ═══════════════════════════════════════════ */
+        .rec-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .rec-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.25rem;
+            padding: 1.75rem;
+            background: var(--vb-surface);
+            border: 1px solid var(--vb-border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .rec-card:hover {
+            border-color: rgba(3, 166, 166, 0.3);
+            transform: translateX(4px);
+        }
+
+        .rec-severity {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .rec-severity.high {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .rec-severity.medium {
+            background: rgba(255, 165, 2, 0.15);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+        }
+
+        .rec-severity.low {
+            background: rgba(3, 166, 166, 0.15);
+            border: 1px solid rgba(3, 166, 166, 0.3);
+        }
+
+        .rec-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .rec-text {
+            color: var(--vb-text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .rec-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(3, 166, 166, 0.1);
+            color: var(--vb-accent);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ═══════════════════════════════════════════
+           ANIMATIONS — DETAIL
+           ═══════════════════════════════════════════ */
+        .anim-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .anim-card {
+            background: var(--vb-surface);
+            border: 1px solid var(--vb-border);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .anim-card:hover {
+            border-color: rgba(3, 166, 166, 0.3);
+        }
+
+        .anim-demo-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #03A6A6, #049DA5);
+            margin: 0 auto 1rem;
+        }
+
+        .anim-card:hover .demo-fadeIn { animation: fadeIn 0.6s ease-out; }
+        .anim-card:hover .demo-slideUp { animation: slideUp 0.6s ease-out; }
+        .anim-card:hover .demo-pulse { animation: pulse 1s ease-in-out infinite; }
+        .anim-card:hover .demo-hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(3, 166, 166, 0.3); }
+
+        .demo-hover { transition: all 0.3s; }
+
+        .anim-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .anim-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--vb-text-muted);
+        }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════ */
+        .vb-footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--vb-text-muted);
+            font-size: 0.85rem;
+        }
+
+        .vb-footer .brand {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--vb-accent);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .section { padding: 4rem 1.25rem; }
+            .hero-meta { flex-wrap: wrap; justify-content: center; }
+            .type-row { grid-template-columns: 1fr; gap: 0.5rem; }
+            .card-states-grid { grid-template-columns: 1fr; }
+            .glass-demo-grid { grid-template-columns: 1fr; }
+            .component-preview { padding: 2rem 1.25rem; }
+            .rec-card { grid-template-columns: 1fr; }
+            .preview-history-item { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+        }
+
+        /* copy tooltip */
+        .copied-tooltip {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--vb-accent);
+            color: var(--bg-primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .copied-tooltip.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════ HERO ═══════ -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>Visual Design Book</span>
+        </div>
+        <h1>
+            <span class="gradient">Pracovní Časomíra</span><br>
+            Design System
+        </h1>
+        <p class="hero-sub">
+            A comprehensive visual language reference for a glassmorphism-based
+            time tracking application built with React. Dark teal palette,
+            layered transparency, and monospace precision.
+        </p>
+        <div class="hero-meta">
+            <div class="hero-meta-item">
+                <div class="val">12</div>
+                <div class="lbl">Design Tokens</div>
+            </div>
+            <div class="hero-meta-item">
+                <div class="val">2</div>
+                <div class="lbl">Font Families</div>
+            </div>
+            <div class="hero-meta-item">
+                <div class="val">8</div>
+                <div class="lbl">Components</div>
+            </div>
+            <div class="hero-meta-item">
+                <div class="val">3</div>
+                <div class="lbl">Animations</div>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            <span>Scroll to explore</span>
+            <div class="arrow"></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ 01 — COLOR PALETTE ═══════ -->
+    <section class="section" id="colors">
+        <div class="section-label">01 — Color Palette</div>
+        <h2 class="section-title">Colors & Tokens</h2>
+        <p class="section-desc">
+            A deep oceanic palette grounded in dark teals and cyans. The system uses CSS custom properties
+            for theming consistency. The intentional low-saturation backgrounds let the accent teal glow
+            stand out — creating visual depth without overwhelming the user.
+        </p>
+
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color-swatch" style="background:#011826;">
+                    <span class="contrast-badge">AA ✓ w/ text</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Background Primary</div>
+                    <div class="color-token">--bg-primary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#011826')">#011826</span>
+                        <span>rgb(1, 24, 38)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#012a3a;">
+                    <span class="contrast-badge">AA ✓ w/ text</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Background Secondary</div>
+                    <div class="color-token">--bg-secondary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#012a3a')">#012a3a</span>
+                        <span>rgb(1, 42, 58)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#03A6A6;">
+                    <span class="contrast-badge">4.5:1 on dark</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Accent Primary</div>
+                    <div class="color-token">--accent-primary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#03A6A6')">#03A6A6</span>
+                        <span>rgb(3, 166, 166)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#049DA5;">
+                    <span class="contrast-badge">5.5:1 on dark ✓</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Accent Secondary</div>
+                    <div class="color-token">--accent-secondary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#049DA5')">#049DA5</span>
+                        <span>rgb(4, 157, 165)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#025940;">
+                    <span class="contrast-badge">gradient end</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Accent Tertiary</div>
+                    <div class="color-token">--accent-tertiary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#025940')">#025940</span>
+                        <span>rgb(2, 89, 64)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#e6f4f5;">
+                    <span class="contrast-badge" style="background:rgba(0,0,0,0.6);">14:1 on dark</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Text Primary</div>
+                    <div class="color-token">--text-primary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#e6f4f5')">#e6f4f5</span>
+                        <span>rgb(230, 244, 245)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#8bc9d0;">
+                    <span class="contrast-badge" style="background:rgba(0,0,0,0.6);">7.2:1 on dark</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Text Secondary</div>
+                    <div class="color-token">--text-secondary</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#8bc9d0')">#8bc9d0</span>
+                        <span>rgb(139, 201, 208)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#ff4757;">
+                    <span class="contrast-badge">danger / stop</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Danger</div>
+                    <div class="color-token">--danger</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#ff4757')">#ff4757</span>
+                        <span>rgb(255, 71, 87)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-swatch" style="background:#ffa502;">
+                    <span class="contrast-badge">warning / pause</span>
+                </div>
+                <div class="color-info">
+                    <div class="color-name">Warning</div>
+                    <div class="color-token">--warning</div>
+                    <div class="color-values">
+                        <span class="color-copy" onclick="copyColor('#ffa502')">#ffa502</span>
+                        <span>rgb(255, 165, 2)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Glass showcase -->
+        <div class="glass-showcase">
+            <div class="glass-showcase-title">Glassmorphism Layers</div>
+            <div class="glass-showcase-desc">
+                Three transparency levels create visual hierarchy. Each uses backdrop-filter: blur(20px) saturate(180%) for the frosted effect.
+            </div>
+            <div class="glass-demo-grid">
+                <div class="glass-demo-card level-1">
+                    <div class="glass-label">Level 1 — Subtle</div>
+                    <div class="glass-value">rgba(3, 127, 140, 0.08)</div>
+                </div>
+                <div class="glass-demo-card level-2">
+                    <div class="glass-label">Level 2 — Default</div>
+                    <div class="glass-value">rgba(3, 127, 140, 0.15)</div>
+                </div>
+                <div class="glass-demo-card level-3">
+                    <div class="glass-label">Level 3 — Emphasized</div>
+                    <div class="glass-value">rgba(3, 127, 140, 0.25)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ 02 — TYPOGRAPHY ═══════ -->
+    <section class="section" id="typography">
+        <div class="section-label">02 — Typography</div>
+        <h2 class="section-title">Type System</h2>
+        <p class="section-desc">
+            Two fonts with distinct roles: DM Sans for readability in UI text, JetBrains Mono
+            for numerical precision and technical labels. The pairing creates a clear split
+            between "human" and "data" layers.
+        </p>
+
+        <!-- DM Sans -->
+        <div class="type-specimen">
+            <div class="type-family-header">
+                <div class="type-family-name" style="font-family:'DM Sans',sans-serif;">DM Sans</div>
+                <span class="type-family-role">UI / Body / Headings</span>
+            </div>
+
+            <div class="type-scale">
+                <div class="type-row">
+                    <div class="type-row-meta">3rem / 700<br>H1 Title</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:3rem; font-weight:700; letter-spacing:-0.02em; line-height:1.1;">Pracovní Časomíra</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">1.8rem / 700<br>H2 Section</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:1.8rem; font-weight:700;">Historie práce</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">1.3rem / 700<br>Card Title</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:1.3rem; font-weight:700;">Vývoj webové aplikace</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">1.1rem / 500<br>Subtitle</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:1.1rem; font-weight:500; color:var(--vb-text-muted);">Sledujte více projektů současně</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">1rem / 400<br>Body</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:1rem;">Nový projekt pro sledování pracovní doby</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">0.95rem / 600<br>Button</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">▶ Start</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">0.9rem / 400<br>Label</div>
+                    <div class="type-row-sample" style="font-family:'DM Sans',sans-serif; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--vb-text-muted);">Aktivní projekty</div>
+                </div>
+            </div>
+
+            <div class="type-weights" style="font-family:'DM Sans',sans-serif;">
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:400;">Aa</span>
+                    <span class="type-weight-label">Regular 400</span>
+                </div>
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:500;">Aa</span>
+                    <span class="type-weight-label">Medium 500</span>
+                </div>
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:600;">Aa</span>
+                    <span class="type-weight-label">SemiBold 600</span>
+                </div>
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:700;">Aa</span>
+                    <span class="type-weight-label">Bold 700</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- JetBrains Mono -->
+        <div class="type-specimen">
+            <div class="type-family-header">
+                <div class="type-family-name" style="font-family:'JetBrains Mono',monospace;">JetBrains Mono</div>
+                <span class="type-family-role">Timer / Data / Stats</span>
+            </div>
+
+            <div class="type-scale">
+                <div class="type-row">
+                    <div class="type-row-meta">2.5rem / 700<br>Timer Main</div>
+                    <div class="type-row-sample" style="font-family:'JetBrains Mono',monospace; font-size:2.5rem; font-weight:700; letter-spacing:0.05em; color:var(--vb-accent);">01:42:37</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">2rem / 700<br>Stat Value</div>
+                    <div class="type-row-sample" style="font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700; color:var(--vb-accent);">5</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">1.5rem / 700<br>Duration</div>
+                    <div class="type-row-sample" style="font-family:'JetBrains Mono',monospace; font-size:1.5rem; font-weight:700; color:var(--vb-accent);">02:15:00</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">0.9rem / 400<br>Timestamp</div>
+                    <div class="type-row-sample" style="font-family:'JetBrains Mono',monospace; font-size:0.9rem; color:var(--vb-text-muted);">06.03.2026 14:30 → 06.03.2026 16:45</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-row-meta">0.85rem / 600<br>Status</div>
+                    <div class="type-row-sample" style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--vb-text-muted);">● BĚŽÍ</div>
+                </div>
+            </div>
+
+            <div class="type-weights" style="font-family:'JetBrains Mono',monospace;">
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:400;">01:00</span>
+                    <span class="type-weight-label">Regular 400</span>
+                </div>
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:600;">01:00</span>
+                    <span class="type-weight-label">SemiBold 600</span>
+                </div>
+                <div class="type-weight-item">
+                    <span class="type-weight-sample" style="font-weight:700;">01:00</span>
+                    <span class="type-weight-label">Bold 700</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ 03 — COMPONENTS ═══════ -->
+    <section class="section" id="components">
+        <div class="section-label">03 — Components</div>
+        <h2 class="section-title">UI Components</h2>
+        <p class="section-desc">
+            Every interactive element extracted and documented. Components use consistent
+            border-radius, shadow depth, and glass layering across all states.
+        </p>
+
+        <!-- Buttons -->
+        <div class="component-block">
+            <div class="component-name">Buttons</div>
+            <div class="component-desc">
+                Eight button variants across three systematic sizes. Gradient fills signal primary actions;
+                ghost/outline styles for secondary. All share the same radius (0.75rem),
+                font weight (600), and uppercase treatment.
+            </div>
+            <div class="component-preview">
+                <div style="margin-bottom:1.5rem;">
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.08em;">Size scale</div>
+                    <div class="btn-grid" style="align-items:flex-end;">
+                        <div class="btn-item">
+                            <button class="preview-btn btn-sm start">▶ Start</button>
+                            <div class="btn-label">.btn-sm — 0.5rem 1rem</div>
+                        </div>
+                        <div class="btn-item">
+                            <button class="preview-btn btn-md start">▶ Start</button>
+                            <div class="btn-label">.btn-md — 0.9rem 1.75rem</div>
+                        </div>
+                        <div class="btn-item">
+                            <button class="preview-btn btn-lg start">▶ Start</button>
+                            <div class="btn-label">.btn-lg — 1.1rem 2.25rem</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height:1px; background:rgba(3,166,166,0.15); margin-bottom:1.5rem;"></div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.08em;">All variants (default size: md)</div>
+                <div class="btn-grid">
+                    <div class="btn-item">
+                        <button class="preview-btn btn-md start">▶ Start</button>
+                        <div class="btn-label">.btn-start</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-md stop">◼ Stop</button>
+                        <div class="btn-label">.btn-stop</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-md pause">⏸ Pauza</button>
+                        <div class="btn-label">.btn-pause</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-md resume">▶ Pokračovat</button>
+                        <div class="btn-label">.btn-resume</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-lg add">+ Přidat projekt</button>
+                        <div class="btn-label">.btn-add (lg)</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-sm delete">🗑️ Smazat</button>
+                        <div class="btn-label">.btn-delete (sm)</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-md export">📥 Export CSV</button>
+                        <div class="btn-label">.btn-export</div>
+                    </div>
+                    <div class="btn-item">
+                        <button class="preview-btn btn-md clear">🗑️ Vymazat</button>
+                        <div class="btn-label">.btn-clear</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="component-block">
+            <div class="component-name">Text Input</div>
+            <div class="component-desc">
+                Glass-layered input with subtle backdrop blur. The focus state adds a teal glow ring
+                (box-shadow) and shifts the background for a clear active signal.
+            </div>
+            <div class="component-preview">
+                <div class="input-states">
+                    <div>
+                        <div class="input-state-label">Default</div>
+                        <input class="preview-input" type="text" placeholder="Např: Vývoj webové aplikace..." readonly>
+                    </div>
+                    <div>
+                        <div class="input-state-label">Focused</div>
+                        <input class="preview-input" type="text" value="Nový projekt" style="border-color:#03A6A6; background:rgba(3,166,166,0.1); box-shadow:0 0 0 3px rgba(3,166,166,0.15);" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Card States -->
+        <div class="component-block">
+            <div class="component-name">Project Card — States</div>
+            <div class="component-desc">
+                The central component. Three states control border color and timer indicator:
+                idle (default border), running (teal border + animated top bar), paused (amber border + static bar).
+            </div>
+            <div class="component-preview">
+                <div class="card-states-grid">
+                    <!-- Idle -->
+                    <div class="preview-card">
+                        <div class="preview-card-header">
+                            <div class="preview-card-name">Design System</div>
+                            <button class="preview-btn btn-sm delete" style="flex:none;">🗑️ Smazat</button>
+                        </div>
+                        <div class="preview-timer">
+                            <div class="time">00:00:00</div>
+                            <div class="status">○ ZASTAVENO</div>
+                        </div>
+                        <div class="preview-card-buttons">
+                            <button class="preview-btn start">▶ Start</button>
+                        </div>
+                    </div>
+
+                    <!-- Running -->
+                    <div class="preview-card state-running">
+                        <div class="preview-card-header">
+                            <div class="preview-card-name">API Integration</div>
+                            <button class="preview-btn btn-sm delete" style="flex:none;">🗑️ Smazat</button>
+                        </div>
+                        <div class="preview-timer active">
+                            <div class="time">01:42:37</div>
+                            <div class="status">● BĚŽÍ</div>
+                        </div>
+                        <div class="preview-card-buttons">
+                            <button class="preview-btn pause">⏸ Pauza</button>
+                            <button class="preview-btn stop">◼ Stop</button>
+                        </div>
+                    </div>
+
+                    <!-- Paused -->
+                    <div class="preview-card state-paused">
+                        <div class="preview-card-header">
+                            <div class="preview-card-name">Bug Fixes</div>
+                            <button class="preview-btn btn-sm delete" style="flex:none;">🗑️ Smazat</button>
+                        </div>
+                        <div class="preview-timer paused-timer">
+                            <div class="time">00:35:12</div>
+                            <div class="status">⏸ POZASTAVENO</div>
+                        </div>
+                        <div class="preview-card-buttons">
+                            <button class="preview-btn resume">▶ Pokračovat</button>
+                            <button class="preview-btn stop">◼ Stop</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="component-block">
+            <div class="component-name">Stat Cards</div>
+            <div class="component-desc">
+                Dashboard metrics in a 4-column grid. Hover lifts the card to invite interaction.
+                Monospace values ensure numerical alignment.
+            </div>
+            <div class="component-preview">
+                <div class="stat-preview-grid">
+                    <div class="preview-stat">
+                        <div class="val">3</div>
+                        <div class="lbl">Aktivní projekty</div>
+                    </div>
+                    <div class="preview-stat">
+                        <div class="val">1</div>
+                        <div class="lbl">Běží nyní</div>
+                    </div>
+                    <div class="preview-stat">
+                        <div class="val">04:22:15</div>
+                        <div class="lbl">Dnes celkem</div>
+                    </div>
+                    <div class="preview-stat">
+                        <div class="val">12</div>
+                        <div class="lbl">Dokončeno</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Item -->
+        <div class="component-block">
+            <div class="component-name">History Item</div>
+            <div class="component-desc">
+                Completed work sessions in a list layout. The hover slides right for a subtle
+                directional cue, reinforcing the chronological flow.
+            </div>
+            <div class="component-preview">
+                <div class="preview-history">
+                    <div class="preview-history-item">
+                        <div>
+                            <div class="preview-history-task">Frontend Refactor</div>
+                            <div class="preview-history-date">06.03.2026 09:00 → 06.03.2026 11:30 <span style="color:#ffa502; margin-left:0.5rem;">(pauza: 00:15:00)</span></div>
+                        </div>
+                        <div class="preview-history-duration">02:15:00</div>
+                    </div>
+                    <div class="preview-history-item">
+                        <div>
+                            <div class="preview-history-task">Database Migration</div>
+                            <div class="preview-history-date">05.03.2026 14:00 → 05.03.2026 16:45</div>
+                        </div>
+                        <div class="preview-history-duration">02:45:00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Focus States -->
+        <div class="component-block">
+            <div class="component-name">Focus States</div>
+            <div class="component-desc">
+                All interactive elements use <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">:focus-visible</code> for keyboard navigation. 
+                The combo approach: color-matched glow ring + subtle scale pulse. Tab through the buttons below to see it live.
+            </div>
+            <div class="component-preview">
+                <div style="display:flex; flex-direction:column; gap:2rem;">
+                    <div>
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em;">Tab through these → teal glow + scale pulse</div>
+                        <div class="btn-grid">
+                            <button class="preview-btn start" style="outline:none; box-shadow:0 0 0 3px rgba(3,166,166,0.3), 0 0 20px rgba(3,166,166,0.15);">▶ Start</button>
+                            <button class="preview-btn resume">▶ Pokračovat</button>
+                            <button class="preview-btn add">+ Přidat</button>
+                            <button class="preview-btn export">📥 Export</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em;">Destructive actions → color-matched rings</div>
+                        <div class="btn-grid">
+                            <button class="preview-btn stop" style="outline:none; box-shadow:0 0 0 3px rgba(255,71,87,0.3), 0 0 20px rgba(255,71,87,0.15);">◼ Stop</button>
+                            <button class="preview-btn pause" style="outline:none; box-shadow:0 0 0 3px rgba(255,165,2,0.3), 0 0 20px rgba(255,165,2,0.15);">⏸ Pauza</button>
+                            <button class="preview-btn delete" style="outline:none; box-shadow:0 0 0 3px rgba(255,71,87,0.3), 0 0 20px rgba(255,71,87,0.15);">🗑️ Smazat</button>
+                        </div>
+                    </div>
+                    <div style="background:rgba(3,166,166,0.08); border-radius:12px; padding:1.25rem; border:1px solid rgba(3,166,166,0.15);">
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--accent-primary); margin-bottom:0.5rem;">Implementation</div>
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--text-secondary); line-height:1.8;">
+                            button:focus-visible {<br>
+                            &nbsp;&nbsp;outline: none;<br>
+                            &nbsp;&nbsp;box-shadow: 0 0 0 3px rgba(3,166,166,0.3), 0 0 20px rgba(3,166,166,0.15);<br>
+                            &nbsp;&nbsp;animation: focusPulse 0.3s ease-out;<br>
+                            }<br><br>
+                            @keyframes focusPulse {<br>
+                            &nbsp;&nbsp;0% { transform: scale(1); }<br>
+                            &nbsp;&nbsp;50% { transform: scale(1.03); }<br>
+                            &nbsp;&nbsp;100% { transform: scale(1); }<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animations -->
+        <div class="component-block">
+            <div class="component-name">Animations</div>
+            <div class="component-desc">
+                Three CSS keyframe animations plus hover transforms. Hover each card below to preview.
+            </div>
+            <div class="anim-showcase">
+                <div class="anim-card">
+                    <div class="anim-demo-box demo-fadeIn"></div>
+                    <div class="anim-name">fadeIn</div>
+                    <div class="anim-desc">opacity 0→1, 0.4s ease-out</div>
+                </div>
+                <div class="anim-card">
+                    <div class="anim-demo-box demo-slideUp"></div>
+                    <div class="anim-name">slideUp</div>
+                    <div class="anim-desc">Y +30px→0, 0.6s ease-out</div>
+                </div>
+                <div class="anim-card">
+                    <div class="anim-demo-box demo-pulse"></div>
+                    <div class="anim-name">pulse</div>
+                    <div class="anim-desc">opacity 1↔0.5, 2s infinite</div>
+                </div>
+                <div class="anim-card">
+                    <div class="anim-demo-box demo-hover"></div>
+                    <div class="anim-name">hover lift</div>
+                    <div class="anim-desc">Y -2px to -4px + shadow</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ 04 — LAYOUT & SPACING ═══════ -->
+    <section class="section" id="layout">
+        <div class="section-label">04 — Layout & Spacing</div>
+        <h2 class="section-title">Spatial System</h2>
+        <p class="section-desc">
+            A container-based layout at 1400px max-width with 2rem body padding.
+            Spacing uses rem-based values for scalability. The grid system is flexible —
+            auto-fill with 400px minimum card width.
+        </p>
+
+        <!-- Spacing scale -->
+        <h3 style="font-size:1.1rem; font-weight:600; margin-bottom:1.25rem;">Spacing Scale</h3>
+        <div class="spacing-visual">
+            <div class="spacing-row">
+                <div class="spacing-label">xs</div>
+                <div class="spacing-bar" style="width:32px;"></div>
+                <div class="spacing-value">0.5rem</div>
+            </div>
+            <div class="spacing-row">
+                <div class="spacing-label">sm</div>
+                <div class="spacing-bar" style="width:64px;"></div>
+                <div class="spacing-value">0.75rem</div>
+            </div>
+            <div class="spacing-row">
+                <div class="spacing-label">md</div>
+                <div class="spacing-bar" style="width:96px;"></div>
+                <div class="spacing-value">1rem</div>
+            </div>
+            <div class="spacing-row">
+                <div class="spacing-label">lg</div>
+                <div class="spacing-bar" style="width:160px;"></div>
+                <div class="spacing-value">1.5rem</div>
+            </div>
+            <div class="spacing-row">
+                <div class="spacing-label">xl</div>
+                <div class="spacing-bar" style="width:224px;"></div>
+                <div class="spacing-value">2rem</div>
+            </div>
+            <div class="spacing-row">
+                <div class="spacing-label">2xl</div>
+                <div class="spacing-bar" style="width:320px;"></div>
+                <div class="spacing-value">2.5rem</div>
+            </div>
+            <div class="spacing-row">
+                <div class="spacing-label">section</div>
+                <div class="spacing-bar" style="width:400px;"></div>
+                <div class="spacing-value">3rem</div>
+            </div>
+        </div>
+
+        <!-- Border radius -->
+        <h3 style="font-size:1.1rem; font-weight:600; margin-bottom:1.25rem; margin-top:3rem;">Border Radius</h3>
+        <div class="radius-grid">
+            <div class="radius-item">
+                <div class="radius-box" style="border-radius:4px;"></div>
+                <div class="radius-label">4px<br>contrast badge</div>
+            </div>
+            <div class="radius-item">
+                <div class="radius-box" style="border-radius:0.5rem;"></div>
+                <div class="radius-label">0.5rem<br>btn-delete</div>
+            </div>
+            <div class="radius-item">
+                <div class="radius-box" style="border-radius:0.75rem;"></div>
+                <div class="radius-label">0.75rem<br>buttons, inputs, stat cards</div>
+            </div>
+            <div class="radius-item">
+                <div class="radius-box" style="border-radius:1rem;"></div>
+                <div class="radius-label">1rem<br>timer display</div>
+            </div>
+            <div class="radius-item">
+                <div class="radius-box" style="border-radius:1.5rem;"></div>
+                <div class="radius-label">1.5rem<br>cards, sections</div>
+            </div>
+        </div>
+
+        <!-- Layout wireframe -->
+        <h3 style="font-size:1.1rem; font-weight:600; margin-bottom:1.25rem; margin-top:3rem;">Page Structure</h3>
+        <div class="layout-diagram">
+            <div class="layout-wireframe">
+                <div class="wireframe-block" style="display:flex; justify-content:space-between; align-items:center; padding:1.5rem;">
+                    <span>Header (h1 + subtitle + total time)</span>
+                    <span>Date Card</span>
+                </div>
+                <div class="wireframe-block">Stats Grid (4 columns, auto-fit minmax 200px)</div>
+                <div class="wireframe-block" style="display:flex; align-items:center; gap:1rem; padding:1.25rem;">
+                    <span style="flex:1;">Input — New Project</span>
+                    <span>+ Add Button</span>
+                </div>
+                <div class="wireframe-grid">
+                    <div class="wireframe-block tall">Project Card</div>
+                    <div class="wireframe-block tall">Project Card</div>
+                    <div class="wireframe-block tall">Project Card</div>
+                </div>
+                <div class="wireframe-block" style="padding:2rem;">
+                    History Section (header + list)<br>
+                    <span style="font-size:0.6rem; opacity:0.6;">grid: auto-fill, minmax(400px, 1fr)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ 05 — UX RECOMMENDATIONS ═══════ -->
+    <section class="section" id="recommendations">
+        <div class="section-label">05 — UX Recommendations</div>
+        <h2 class="section-title">Improvement Opportunities</h2>
+        <p class="section-desc">
+            Observations and actionable suggestions to elevate the interface. Ordered by impact —
+            from accessibility essentials to polish details.
+        </p>
+
+        <div class="rec-list">
+            <div class="rec-card" style="border-color: rgba(3, 166, 166, 0.25);">
+                <div class="rec-severity" style="background: rgba(3, 166, 166, 0.15); border: 1px solid rgba(3, 166, 166, 0.3);">✅</div>
+                <div>
+                    <div class="rec-title" style="text-decoration: line-through; opacity: 0.6;">Accent Secondary contrast is below AA</div>
+                    <div class="rec-text">
+                        <strong style="color:var(--vb-accent);">Resolved.</strong> Updated from <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; text-decoration:line-through; opacity:0.5;">#037F8C</code> (3.8:1) to <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">#049DA5</code> (5.5:1) — comfortably above WCAG AA's 4.5:1 threshold while maintaining clear visual separation from accent-primary (#03A6A6, 6.0:1). The hue shift is minimal, preserving the original teal character.
+                    </div>
+                    <span class="rec-tag">Accessibility — Fixed</span>
+                </div>
+            </div>
+
+            <div class="rec-card" style="border-color: rgba(3, 166, 166, 0.25);">
+                <div class="rec-severity" style="background: rgba(3, 166, 166, 0.15); border: 1px solid rgba(3, 166, 166, 0.3);">✅</div>
+                <div>
+                    <div class="rec-title" style="text-decoration: line-through; opacity: 0.6;">No keyboard navigation support</div>
+                    <div class="rec-text">
+                        <strong style="color:var(--vb-accent);">Resolved.</strong> Added <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">:focus-visible</code> to all interactive elements with a combo approach: teal glow ring (consistent with input focus) plus a subtle scale pulse animation (1.03x over 0.3s). Destructive buttons (delete, stop, clear) use color-matched red/amber rings instead. Uses <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">:focus-visible</code> over <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">:focus</code> to avoid showing outlines on mouse clicks.
+                    </div>
+                    <span class="rec-tag">Accessibility — Fixed</span>
+                </div>
+            </div>
+
+            <div class="rec-card" style="border-color: rgba(3, 166, 166, 0.25);">
+                <div class="rec-severity" style="background: rgba(3, 166, 166, 0.15); border: 1px solid rgba(3, 166, 166, 0.3);">✅</div>
+                <div>
+                    <div class="rec-title" style="text-decoration: line-through; opacity: 0.6;">Pause button text has critical contrast failure</div>
+                    <div class="rec-text">
+                        <strong style="color:var(--vb-accent);">Resolved.</strong> White text on amber/orange gradient (<code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">#ffa502</code>) yielded ~1.5:1 contrast — deeply failing WCAG. Changed to <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">color: var(--bg-primary)</code> (<code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">#011826</code>), matching the same dark-on-light logic already used on the Start button. Consistent pattern: light backgrounds always get dark text.
+                    </div>
+                    <span class="rec-tag">Accessibility — Fixed</span>
+                </div>
+            </div>
+
+            <div class="rec-card" style="border-color: rgba(3, 166, 166, 0.25);">
+                <div class="rec-severity" style="background: rgba(3, 166, 166, 0.15); border: 1px solid rgba(3, 166, 166, 0.3);">✅</div>
+                <div>
+                    <div class="rec-title" style="text-decoration: line-through; opacity: 0.6;">Timer glow causes eye strain on running digits</div>
+                    <div class="rec-text">
+                        <strong style="color:var(--vb-accent);">Resolved.</strong> Removed <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">text-shadow</code> from timer digits — the 30px+60px blur was visually slurring ticking seconds and creating eye fatigue. Moved the ambient glow to the timer container (<code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">box-shadow</code> on <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">.preview-timer.active</code>) to keep the "active energy" feel without compromising digit legibility. The pulsing top bar remains as the primary activity indicator.
+                    </div>
+                    <span class="rec-tag">Readability — Fixed</span>
+                </div>
+            </div>
+
+            <div class="rec-card" style="border-color: rgba(3, 166, 166, 0.25);">
+                <div class="rec-severity" style="background: rgba(3, 166, 166, 0.15); border: 1px solid rgba(3, 166, 166, 0.3);">✅</div>
+                <div>
+                    <div class="rec-title" style="text-decoration: line-through; opacity: 0.6;">Button padding is inconsistent across variants</div>
+                    <div class="rec-text">
+                        <strong style="color:var(--vb-accent);">Resolved.</strong> Replaced ad-hoc padding overrides with a systematic three-tier size scale: <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">.btn-sm</code> (0.5rem 1rem), <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">.btn-md</code> (0.9rem 1.75rem — default), <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">.btn-lg</code> (1.1rem 2.25rem). Delete uses sm, primary actions use md, prominent CTAs (Add Project) use lg. Sizes are now intentional, not arbitrary.
+                    </div>
+                    <span class="rec-tag">Design System — Fixed</span>
+                </div>
+            </div>
+
+            <div class="rec-card">
+                <div class="rec-severity medium">💡</div>
+                <div>
+                    <div class="rec-title">Destructive actions need confirmation hierarchy</div>
+                    <div class="rec-text">
+                        Delete and Clear use <code style="font-family:'JetBrains Mono',monospace; font-size:0.85rem;">window.confirm()</code> — a jarring browser dialog that breaks the glass aesthetic. Replace with an inline confirmation pattern: first click changes the button to "Confirm? / Cancel" state within the same card. This keeps the user in context and matches the visual language.
+                    </div>
+                    <span class="rec-tag">Interaction Design</span>
+                </div>
+            </div>
+
+            <div class="rec-card">
+                <div class="rec-severity medium">💡</div>
+                <div>
+                    <div class="rec-title">Timer precision creates cognitive load</div>
+                    <div class="rec-text">
+                        The HH:MM:SS format with seconds ticking every 1s is visually noisy, especially with multiple cards running. Consider showing only HH:MM in the main display and revealing seconds on hover or in an expanded state. The constant motion competes with the user's focus.
+                    </div>
+                    <span class="rec-tag">Cognitive Load</span>
+                </div>
+            </div>
+
+            <div class="rec-card">
+                <div class="rec-severity medium">💡</div>
+                <div>
+                    <div class="rec-title">Empty state is a missed opportunity</div>
+                    <div class="rec-text">
+                        The current empty state is just an icon and text. This is the first thing new users see — make it an onboarding moment. Add a subtle animation, a sample project name suggestion, or a quick "Try it: click Add to start" micro-tutorial to reduce time-to-first-action.
+                    </div>
+                    <span class="rec-tag">Onboarding</span>
+                </div>
+            </div>
+
+            <div class="rec-card">
+                <div class="rec-severity low">✨</div>
+                <div>
+                    <div class="rec-title">Add haptic feedback for state transitions</div>
+                    <div class="rec-text">
+                        When a timer starts, pauses, or stops, the only feedback is the visual state change. Adding a subtle CSS shake on stop, a scale pulse on start (e.g. card briefly scales to 1.02), and an amber flash on pause would reinforce the action without audio.
+                    </div>
+                    <span class="rec-tag">Micro-interactions</span>
+                </div>
+            </div>
+
+            <div class="rec-card">
+                <div class="rec-severity low">✨</div>
+                <div>
+                    <div class="rec-title">History lacks filtering and search</div>
+                    <div class="rec-text">
+                        As the history grows, finding specific entries becomes difficult. Add a date range filter and task name search. The existing glass input style can be reused — maintain consistency while adding utility. Consider grouping by day with collapsible sections.
+                    </div>
+                    <span class="rec-tag">Scalability</span>
+                </div>
+            </div>
+
+            <div class="rec-card">
+                <div class="rec-severity low">✨</div>
+                <div>
+                    <div class="rec-title">Consider localStorage persistence UX</div>
+                    <div class="rec-text">
+                        Data lives only in localStorage — if users clear browser data, everything is lost. Add an export reminder after N completed sessions, or show a subtle "last saved" timestamp in the footer to build trust that data is being preserved.
+                    </div>
+                    <span class="rec-tag">Data Safety</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ FOOTER ═══════ -->
+    <footer class="vb-footer">
+        <p>
+            <span class="brand">Pracovní Časomíra</span> — Visual Design Book<br>
+            <span style="opacity:0.6;">Generated March 2026 · React · Glassmorphism · Dark Teal</span>
+        </p>
+    </footer>
+
+    <!-- Copy tooltip -->
+    <div class="copied-tooltip" id="copiedTooltip">Copied!</div>
+
+    <script>
+        function copyColor(val) {
+            navigator.clipboard.writeText(val).then(() => {
+                const t = document.getElementById('copiedTooltip');
+                t.textContent = 'Copied: ' + val;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 1500);
+            }).catch(() => {});
+        }
+
+        // Intersection Observer for fade-in on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
