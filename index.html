@@ -84,8 +84,9 @@
 
         .add-project-form {
             display: flex;
-            gap: 1rem;
-            align-items: flex-end;
+    gap: 1.5rem; /* Zvětšili jsme mezeru pro lepší dýchání prvků */
+    align-items: flex-end;
+    max-width: 900px;
         }
 
         .form-group {
@@ -645,27 +646,30 @@
         /* New Styles for Top Dashboard */
         .top-dashboard {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-            animation: fadeIn 0.6s ease-out;
-        }
+    justify-content: space-between;
+    align-items: flex-start; /* ZMĚNA z center na flex-start */
+    margin-bottom: 3rem;
+    animation: fadeIn 0.6s ease-out;
 
         .header-left h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
+           display: flex; /* Vynutí, že emoji a text budou vždy v jedné rovině */
+    align-items: center;
+    gap: 0.75rem; /* Elegantní mezera místo obyčejné mezery v textu */
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem; /* Zmenšeno, aby byl podnadpis blíž */
+    letter-spacing: -0.02em;
+    line-height: 1.1; /* Fixuje výšku řádku, aby emoji nerozbíjelo layout */
         }
 
         .header-left p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem; /* ZMĚNA: Větší mezera odčlení texty od štítku s časem */
         }
 
         .total-time-display {
@@ -728,6 +732,99 @@
             text-shadow: 0 0 20px rgba(3, 166, 166, 0.4);
             line-height: 1;
         }
+        /* RESPONSIVE DESIGN PRO MOBIL */
+@media (max-width: 768px) {
+    /* 1. TOP DASHBOARD - Kompaktnější rozložení */
+    .top-dashboard {
+        flex-direction: column !important;
+        align-items: stretch !important; /* Změna: roztáhneme na šířku místo centrování */
+        gap: 1rem !important; /* Menší mezera */
+        margin-bottom: 1.5rem !important; /* Zmenšení spodního okraje */
+    }
+
+    .header-left {
+        text-align: center !important;
+        width: 100%;
+    }
+
+    /* Zmenšení hlavního nadpisu, aby neřval na mobilu */
+    .header-left h1 {
+        font-size: 2.2rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .header-left p {
+        font-size: 0.95rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* 2. CELKEM ODPRACOVÁNO - Profi UI rozložení (Label vlevo, hodnota vpravo) */
+    .total-time-display {
+        width: 100%;
+        display: flex !important;
+        justify-content: space-between !important;
+        padding: 0.8rem 1rem !important; /* Menší padding */
+    }
+
+    .total-time-display .label {
+        font-size: 0.8rem !important;
+    }
+
+    .total-time-display .value {
+        font-size: 1.2rem !important;
+    }
+
+    /* 3. KARTA S ČASEM A DATEM - Kompaktnější */
+    .current-date-card {
+        width: 100% !important;
+        padding: 1rem !important; /* Menší padding */
+        text-align: center !important;
+    }
+
+    .date-main {
+        justify-content: center !important;
+        margin-bottom: 0.25rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    .time-main {
+        font-size: 2rem !important; /* Zmenšení z 2.5rem */
+    }
+
+    /* 4. ZBYTEK (Zůstává z tvého původního kódu) */
+    body { padding: 1rem; }
+    
+    .projects-grid { grid-template-columns: 1fr; }
+    
+    .add-project-section { padding: 1.5rem !important; }
+    
+    .add-project-form {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+    }
+    
+    .form-group { width: 100%; text-align: left !important; }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .stat-card { padding: 1rem !important; }
+    .stat-value { font-size: 1.4rem !important; }
+    
+    .project-buttons { flex-direction: column; }
+    button { width: 100%; }
+    
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .history-duration { text-align: left; }
+}
     </style>
 </head>
 
