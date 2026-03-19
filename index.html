@@ -650,6 +650,7 @@
     align-items: flex-start; /* ZMĚNA z center na flex-start */
     margin-bottom: 3rem;
     animation: fadeIn 0.6s ease-out;
+        }
 
         .header-left h1 {
            display: flex; /* Vynutí, že emoji a text budou vždy v jedné rovině */
@@ -805,7 +806,23 @@
         gap: 1rem !important;
     }
     
-    .form-group { width: 100%; text-align: left !important; }
+    .form-group { 
+        width: 100% !important; 
+        text-align: center !important; 
+    }
+
+    .form-group label {
+        margin-left: 0 !important;
+        margin-bottom: 0.5rem !important;
+        display: block;
+    }
+
+    .add-project-form input[type="text"],
+    .add-project-form .btn-add {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
     
     .stats-grid {
         grid-template-columns: 1fr 1fr !important;
